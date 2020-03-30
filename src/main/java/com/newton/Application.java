@@ -10,7 +10,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class Application {
 
@@ -57,11 +59,15 @@ public class Application {
 
   private static void printUsgae() {
     ClassLoader classLoader = Application.class.getClassLoader();
-    File file = new File(classLoader.getResource("usage.txt").getFile());
+    InputStream resourceAsStream = classLoader.getResourceAsStream("usage.txt");
+
+
     try {
-      printFile(file);
+      System.out.println(new String(resourceAsStream.readAllBytes(), StandardCharsets.UTF_8));
+//      System.out.println("Full Path: " + file.getCanonicalPath());
+//      printFile(file);
     } catch (IOException e) {
-      System.out.println(String.format("Exception: e", e.getMessage()));
+      System.out.println(String.format("Exception: %s", e.getMessage()));
     }
   }
 

@@ -1,11 +1,11 @@
 |-------------------------------------------------------------|
-|											PARKING LOT MANUAL										  |
+|                     PARKING LOT MANUAL                      |
 |-------------------------------------------------------------|
-|	create_parking_lot {SLOT_SIZE}									            |
-|	park {VEHICLE_REG_NO} {VEHICLE_COLOUR}									    |
-|	leave {VEHICLE_REG_NO}									                    |
-|	status			                                                |
-|	registration_numbers_for_cars_with_color {VEHICLE_COLOUR}		|
-|	slot_numbers_for_cars_with_color {VEHICLE_COLOUR}						|
-|	slot_number_for_registration_number {VEHICLE_REG_NO}				|
+| create_parking_lot {SLOT_SIZE}                              |
+| park {VEHICLE_REG_NO} {VEHICLE_COLOUR}                      |
+| leave {VEHICLE_REG_NO}                                      |
+| status                                                      |
+| registration_numbers_for_cars_with_color {VEHICLE_COLOUR}   |
+| slot_numbers_for_cars_with_color {VEHICLE_COLOUR}           |
+| slot_number_for_registration_number {VEHICLE_REG_NO}        |
 |-------------------------------------------------------------|
