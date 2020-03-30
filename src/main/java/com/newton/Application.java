@@ -23,7 +23,8 @@ public class Application {
     InMemoryDB db = new InMemoryDB();
     ParkingManager parkingManager =
         new ParkingManager(new InMemoryVehicleDao(db), new InMemorySlotDao(db));
-    ParkingInstructionHandler parkingInstructionHandler = new ParkingInstructionHandler(parkingManager);
+    ParkingInstructionHandler parkingInstructionHandler =
+        new ParkingInstructionHandler(parkingManager);
 
     if (args.length == 0) {
       startInteractiveCommandPrompt(parkingInstructionHandler);
@@ -37,7 +38,7 @@ public class Application {
     try {
       FileReader fileReader = new FileReader(new File(file));
       BufferedReader bufferedReader = new BufferedReader(fileReader);
-      readAndExecute(parkingInstructionHandler, bufferedReader);
+      readAndExecute(parkingInstructionHandler, bufferedReader, false);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -46,18 +47,19 @@ public class Application {
   private static void startInteractiveCommandPrompt(
       ParkingInstructionHandler parkingInstructionHandler) {
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    readAndExecute(parkingInstructionHandler, reader);
+    readAndExecute(parkingInstructionHandler, reader, true);
   }
 
-  private static void readAndExecute(ParkingInstructionHandler parkingInstructionHandler, BufferedReader reader) {
+  private static void readAndExecute(
+      ParkingInstructionHandler parkingInstructionHandler, BufferedReader reader, boolean cmd) {
     String line;
     while (true) {
-      System.out.print("cmdline> ");
+      if (cmd) System.out.print("cmdline> ");
       try {
         line = reader.readLine();
-        String[] inputs = new String[]{"exit"};
+        String[] inputs = new String[] {"exit"};
         if (line != null) {
-           inputs = line.split(" ");
+          inputs = line.split(" ");
         }
         try {
           parkingInstructionHandler.execute(inputs);
