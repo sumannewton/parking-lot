@@ -3,6 +3,7 @@ package com.newton.instruction;
 import com.newton.model.Slot;
 import com.newton.model.Vehicle;
 import com.newton.service.ParkingManager;
+import com.newton.utils.Utils;
 import java.util.List;
 
 public class ParkingInstruction {
@@ -18,7 +19,8 @@ public class ParkingInstruction {
     try {
       instruction = Instruction.valueOf(inputs[0].toUpperCase().replaceAll("\\s+", ""));
     } catch (IllegalArgumentException e) {
-      instruction = Instruction.INVALID_INSTRUCTION;
+      System.out.println(String.format("Invalid instruction passed - %s", inputs[0]));
+      return;
     }
     switch (instruction) {
       case CREATE_PARKING_LOT:
@@ -36,14 +38,9 @@ public class ParkingInstruction {
         Slot slotFreedByRegNo = parkingManager.release(Integer.valueOf(inputs[1]));
         System.out.println(String.format("Slot number %d is free", slotFreedByRegNo.getId()));
         break;
-        //      case RELEASE_VEHICLE_BY_SLOT_ID:
-        //        Slot slotFreedBySlotId = parkingManager.release(Integer.valueOf(inputs[1]));
-        //        System.out.println(String.format("Slot number %d is free",
-        // slotFreedBySlotId.getId()));
-        //        break;
       case STATUS:
         List<Slot> status = parkingManager.status();
-        display(status);
+        Utils.printStatus(status);
         break;
       case SLOT_NUMBER_FOR_REGISTRATION_NUMBER:
         Slot slotForRegNo = parkingManager.getSlotForRegNo(inputs[1]);
@@ -61,20 +58,5 @@ public class ParkingInstruction {
         System.out.println(String.format("Invalid instruction - %s", instruction.name()));
         break;
     }
-  }
-
-  private void display(List<Slot> status) {
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("Slot No\t|\tRegistration No\t|\tColour\n");
-    stringBuilder.append("---------------------------------------").append("\n");
-    status.forEach(
-        slot ->
-            stringBuilder
-                .append(
-                    String.format(
-                        "\t\t%d\t\t|\t%s\t\t|\t%s\t\t\t\t",
-                        slot.getId(), slot.getVehicle().getRegNo(), slot.getVehicle().getColour()))
-                .append("\n"));
-    System.out.println(stringBuilder.toString());
   }
 }

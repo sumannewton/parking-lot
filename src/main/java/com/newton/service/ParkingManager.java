@@ -36,7 +36,6 @@ public class ParkingManager {
                   slotDao.search(SlotSearch.builder().status(Status.FREE).build());
               if (!freeSlots.isEmpty()) nextFreeSlot.set(freeSlots.get(0));
               else nextFreeSlot.set(null);
-              System.out.println("Next free slot: " + nextFreeSlot.get());
             });
   }
 

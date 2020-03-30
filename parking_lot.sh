@@ -8,9 +8,10 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )/target"
 JAR_NAME="parking-lot-1.0-SNAPSHOT.jar"
 
+printf $1;
 if [ -z "$1" ] ; then
-        java -jar $DIR/$JAR_NAME
-        exit 1
+  java -jar $DIR/$JAR_NAME
+  exit 1
 else
-	java -jar $DIR/$JAR_NAME $arg1
+	java -jar $DIR/$JAR_NAME $1
 fi

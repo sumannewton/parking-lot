@@ -6,16 +6,18 @@ import com.newton.dao.InMemoryVehicleDao;
 import com.newton.exception.ParkingException;
 import com.newton.instruction.ParkingInstruction;
 import com.newton.service.ParkingManager;
+import com.newton.utils.Utils;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
 public class Application {
 
   public static void main(String[] args) {
-    printUsage();
+    System.out.println("Parking lot service is starting....");
+    Utils.printUsage();
 
     // Initialize all objects
     InMemoryDB db = new InMemoryDB();
@@ -26,19 +28,32 @@ public class Application {
     if (args.length == 0) {
       startInteractiveCommandPrompt(parkingInstruction);
     } else {
-      startReadingCommandsFromFile(parkingInstruction);
+      startReadingCommandsFromFile(parkingInstruction, args[0]);
     }
   }
 
-  private static void startReadingCommandsFromFile(ParkingInstruction parkingInstruction) {}
+  private static void startReadingCommandsFromFile(
+      ParkingInstruction parkingInstruction, String file) {
+    try {
+      FileReader fileReader = new FileReader(new File(file));
+      BufferedReader bufferedReader = new BufferedReader(fileReader);
+      readAndExecute(parkingInstruction, bufferedReader);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
   private static void startInteractiveCommandPrompt(ParkingInstruction parkingInstruction) {
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    String line;
+    readAndExecute(parkingInstruction, reader);
+  }
+
+  private static void readAndExecute(ParkingInstruction parkingInstruction, BufferedReader reader) {
     while (true) {
+      String line;
       try {
         line = reader.readLine();
-        if (line.equalsIgnoreCase("exit")) {
+        if (line == null || line.equalsIgnoreCase("exit")) {
           System.out.println("Shutting down app....ex");
           System.exit(0);
         }
@@ -49,19 +64,8 @@ public class Application {
           System.out.println(e.getMessage());
         }
       } catch (IOException e) {
-        printUsage();
+        Utils.printUsage();
       }
-    }
-  }
-
-  private static void printUsage() {
-    ClassLoader classLoader = Application.class.getClassLoader();
-    InputStream resourceAsStream = classLoader.getResourceAsStream("usage.txt");
-
-    try {
-      System.out.println(new String(resourceAsStream.readAllBytes(), StandardCharsets.UTF_8));
-    } catch (IOException e) {
-      System.out.println(String.format("Exception: %s", e.getMessage()));
     }
   }
 }
