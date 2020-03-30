@@ -7,8 +7,6 @@ import com.newton.exception.ParkingException;
 import com.newton.instruction.ParkingInstruction;
 import com.newton.service.ParkingManager;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class Application {
 
   public static void main(String[] args) {
-    printUsgae();
+    printUsage();
 
     // Initialize all objects
     InMemoryDB db = new InMemoryDB();
@@ -51,37 +49,19 @@ public class Application {
           System.out.println(e.getMessage());
         }
       } catch (IOException e) {
-        printUsgae();
+        printUsage();
       }
     }
-
   }
 
-  private static void printUsgae() {
+  private static void printUsage() {
     ClassLoader classLoader = Application.class.getClassLoader();
     InputStream resourceAsStream = classLoader.getResourceAsStream("usage.txt");
 
-
     try {
       System.out.println(new String(resourceAsStream.readAllBytes(), StandardCharsets.UTF_8));
-//      System.out.println("Full Path: " + file.getCanonicalPath());
-//      printFile(file);
     } catch (IOException e) {
       System.out.println(String.format("Exception: %s", e.getMessage()));
-    }
-  }
-
-  private static void printFile(File file) throws IOException {
-
-    if (file == null) return;
-
-    try (FileReader reader = new FileReader(file);
-        BufferedReader br = new BufferedReader(reader)) {
-
-      String line;
-      while ((line = br.readLine()) != null) {
-        System.out.println(line);
-      }
     }
   }
 }
