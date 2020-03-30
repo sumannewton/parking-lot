@@ -1,4 +1,4 @@
-package com.newton.model;
+package com.newton.model.slot;
 
 public enum Status {
   FREE,

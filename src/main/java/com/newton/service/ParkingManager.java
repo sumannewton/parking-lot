@@ -4,10 +4,10 @@ import com.newton.dao.Dao;
 import com.newton.dao.InMemorySlotDao;
 import com.newton.exception.ErrorCode;
 import com.newton.exception.ParkingException;
-import com.newton.model.Slot;
+import com.newton.model.vehicle.AbstractVehicle;
+import com.newton.model.slot.Slot;
 import com.newton.model.SlotSearch;
-import com.newton.model.Status;
-import com.newton.model.Vehicle;
+import com.newton.model.slot.Status;
 import com.newton.model.VehicleSearch;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class ParkingManager {
 
-  final Dao<Vehicle> vehicleDao;
+  final Dao<AbstractVehicle> vehicleDao;
   final Dao<Slot> slotDao;
   AtomicReference<Slot> nextFreeSlot;
   AtomicInteger totalSlots;
@@ -24,7 +24,7 @@ public class ParkingManager {
 
   final Runnable freeSlotPicker;
 
-  public ParkingManager(Dao<Vehicle> vehicleDao, Dao<Slot> slotDao) {
+  public ParkingManager(Dao<AbstractVehicle> vehicleDao, Dao<Slot> slotDao) {
     this.vehicleDao = vehicleDao;
     this.slotDao = slotDao;
     nextFreeSlot = new AtomicReference<>();
@@ -44,7 +44,7 @@ public class ParkingManager {
     freeSlotPicker.run();
   }
 
-  public Vehicle park(Vehicle vehicle) throws ParkingException {
+  public AbstractVehicle park(AbstractVehicle vehicle) throws ParkingException {
     if (isParkingFull()) {
       throw new ParkingException(ErrorCode.PARKING_FULL);
     }
@@ -63,7 +63,7 @@ public class ParkingManager {
   }
 
   public Slot release(String vehicleRegNo) {
-    Vehicle vehicle = vehicleDao.get(vehicleRegNo);
+    AbstractVehicle vehicle = vehicleDao.get(vehicleRegNo);
     Slot slot = slotDao.get(vehicle.getSlotId());
 
     // Update slot status to FREE
@@ -72,8 +72,7 @@ public class ParkingManager {
     // Remove vehicle from vehicles table
     vehicleDao.delete(vehicleRegNo);
 
-    if (isParkingFull())
-      freeSlotPicker.run();
+    if (isParkingFull()) freeSlotPicker.run();
 
     return slot;
   }
@@ -88,8 +87,7 @@ public class ParkingManager {
     slot.setStatus(Status.FREE);
     slotDao.save(slot);
 
-    if (isParkingFull())
-      freeSlotPicker.run();
+    if (isParkingFull()) freeSlotPicker.run();
 
     return slot;
   }
@@ -100,7 +98,7 @@ public class ParkingManager {
   }
 
   public Slot getSlotForRegNo(String regNo) {
-    Vehicle vehicle = vehicleDao.get(regNo);
+    AbstractVehicle vehicle = vehicleDao.get(regNo);
     if (vehicle == null) {
       throw new ParkingException(ErrorCode.VEHICLE_NOT_FOUND);
     }
@@ -109,13 +107,13 @@ public class ParkingManager {
 
   public List<Integer> getSlotsForCarsWithColour(String colour) {
     return vehicleDao.search(VehicleSearch.builder().colour(colour).build()).stream()
-        .map(Vehicle::getSlotId)
+        .map(AbstractVehicle::getSlotId)
         .collect(Collectors.toList());
   }
 
   public List<String> getRegNoForCarsWithColour(String colour) {
     return vehicleDao.search(VehicleSearch.builder().colour(colour).build()).stream()
-        .map(Vehicle::getRegNo)
+        .map(AbstractVehicle::getRegNo)
         .collect(Collectors.toList());
   }
 

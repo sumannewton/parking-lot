@@ -1,5 +1,7 @@
 package com.newton.model;
 
+import com.newton.model.slot.Status;
+
 public class SlotSearch {
 
   private Status status = null;

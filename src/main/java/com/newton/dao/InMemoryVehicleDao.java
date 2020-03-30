@@ -1,11 +1,11 @@
 package com.newton.dao;
 
-import com.newton.model.Vehicle;
+import com.newton.model.vehicle.AbstractVehicle;
 import com.newton.model.VehicleSearch;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InMemoryVehicleDao implements Dao<Vehicle> {
+public class InMemoryVehicleDao implements Dao<AbstractVehicle> {
 
   /*
   Acts like a client to interact with in-memory database.
@@ -17,17 +17,17 @@ public class InMemoryVehicleDao implements Dao<Vehicle> {
     this.database.initialize();
   }
 
-  public void save(Vehicle vehicle) {
+  public void save(AbstractVehicle vehicle) {
     database.VEHICLES_TABLE.put(vehicle.getRegNo(), vehicle);
   }
 
-  public Vehicle get(Object id) {
+  public AbstractVehicle get(Object id) {
     return database.VEHICLES_TABLE.get(id);
   }
 
-  public List<Vehicle> search(Object searchRequest) {
+  public List<AbstractVehicle> search(Object searchRequest) {
     VehicleSearch vehicleSearch = (VehicleSearch) searchRequest;
-    List<Vehicle> result = database.VEHICLES_TABLE.values().stream().collect(Collectors.toList());
+    List<AbstractVehicle> result = database.VEHICLES_TABLE.values().stream().collect(Collectors.toList());
     if (vehicleSearch.getColour() != null) {
       result = database.filterByColour(database.VEHICLES_TABLE, vehicleSearch.getColour());
     }

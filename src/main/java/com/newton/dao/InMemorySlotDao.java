@@ -1,6 +1,6 @@
 package com.newton.dao;
 
-import com.newton.model.Slot;
+import com.newton.model.slot.Slot;
 import com.newton.model.SlotSearch;
 import java.util.List;
 

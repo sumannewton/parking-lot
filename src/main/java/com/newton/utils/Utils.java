@@ -1,7 +1,7 @@
 package com.newton.utils;
 
 import com.newton.Application;
-import com.newton.model.Slot;
+import com.newton.model.slot.Slot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;

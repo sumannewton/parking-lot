@@ -1,7 +1,8 @@
 package com.newton.instruction;
 
-import com.newton.model.Slot;
-import com.newton.model.Vehicle;
+import com.newton.model.vehicle.AbstractVehicle;
+import com.newton.model.slot.Slot;
+import com.newton.model.vehicle.VehicleFactory;
 import com.newton.service.ParkingManager;
 import com.newton.utils.Utils;
 import java.util.List;
@@ -30,7 +31,8 @@ public class ParkingInstruction {
         System.out.println(String.format("Created a parking lot with %d slots", numberOfSlots));
         break;
       case PARK:
-        Vehicle vehicle = new Vehicle(inputs[1], inputs[2]);
+        AbstractVehicle vehicle =
+            VehicleFactory.createVehicle("FOUR_WHEELER", inputs[1], inputs[2]);
         vehicle = parkingManager.park(vehicle);
         System.out.println(String.format("Allocated slot number: %d", vehicle.getSlotId()));
         break;

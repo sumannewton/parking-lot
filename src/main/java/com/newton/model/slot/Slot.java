@@ -1,5 +1,6 @@
-package com.newton.model;
+package com.newton.model.slot;
 
+import com.newton.model.vehicle.AbstractVehicle;
 import java.util.StringJoiner;
 
 public class Slot {
@@ -8,7 +9,7 @@ public class Slot {
 
   private Status status = Status.FREE;
 
-  private Vehicle vehicle = null;
+  private AbstractVehicle vehicle = null;
 
   public boolean isFree() {
     return status.equals(Status.FREE);
@@ -34,11 +35,11 @@ public class Slot {
     return this;
   }
 
-  public Vehicle getVehicle() {
+  public AbstractVehicle getVehicle() {
     return vehicle;
   }
 
-  public Slot setVehicle(Vehicle vehicle) {
+  public Slot setVehicle(AbstractVehicle vehicle) {
     this.vehicle = vehicle;
     return this;
   }
