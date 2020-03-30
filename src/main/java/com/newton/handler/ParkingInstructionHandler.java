@@ -1,21 +1,22 @@
-package com.newton.instruction;
+package com.newton.handler;
 
-import com.newton.model.vehicle.AbstractVehicle;
+import com.newton.exception.ParkingException;
 import com.newton.model.slot.Slot;
+import com.newton.model.vehicle.AbstractVehicle;
 import com.newton.model.vehicle.VehicleFactory;
 import com.newton.service.ParkingManager;
 import com.newton.utils.Utils;
 import java.util.List;
 
-public class ParkingInstruction {
+public class ParkingInstructionHandler {
 
   final ParkingManager parkingManager;
 
-  public ParkingInstruction(ParkingManager parkingManager) {
+  public ParkingInstructionHandler(ParkingManager parkingManager) {
     this.parkingManager = parkingManager;
   }
 
-  public void execute(String... inputs) {
+  public void execute(String... inputs) throws ParkingException {
     Instruction instruction = null;
     try {
       instruction = Instruction.valueOf(inputs[0].toUpperCase().replaceAll("\\s+", ""));
@@ -24,6 +25,12 @@ public class ParkingInstruction {
       return;
     }
     switch (instruction) {
+      case EXIT:
+        System.out.println("Shutting down app....");
+        System.exit(0);
+      case HELP:
+        Utils.printUsage();
+        break;
       case CREATE_PARKING_LOT:
         //      case ADD_SLOTS:
         Integer numberOfSlots = Integer.valueOf(inputs[1]);
@@ -31,8 +38,7 @@ public class ParkingInstruction {
         System.out.println(String.format("Created a parking lot with %d slots", numberOfSlots));
         break;
       case PARK:
-        AbstractVehicle vehicle =
-            VehicleFactory.createVehicle("FOUR_WHEELER", inputs[1], inputs[2]);
+        AbstractVehicle vehicle = VehicleFactory.createVehicle("FOUR_WHEELER", inputs[1], inputs[2]);
         vehicle = parkingManager.park(vehicle);
         System.out.println(String.format("Allocated slot number: %d", vehicle.getSlotId()));
         break;
@@ -57,7 +63,7 @@ public class ParkingInstruction {
         System.out.println(regNoForCarsWithColour);
         break;
       default:
-        System.out.println(String.format("Invalid instruction - %s", instruction.name()));
+        System.out.println(String.format("Invalid handler - %s", instruction.name()));
         break;
     }
   }

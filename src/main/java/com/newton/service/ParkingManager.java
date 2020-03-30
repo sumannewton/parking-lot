@@ -4,11 +4,11 @@ import com.newton.dao.Dao;
 import com.newton.dao.InMemorySlotDao;
 import com.newton.exception.ErrorCode;
 import com.newton.exception.ParkingException;
-import com.newton.model.vehicle.AbstractVehicle;
-import com.newton.model.slot.Slot;
 import com.newton.model.SlotSearch;
-import com.newton.model.slot.Status;
 import com.newton.model.VehicleSearch;
+import com.newton.model.slot.Slot;
+import com.newton.model.slot.Status;
+import com.newton.model.vehicle.AbstractVehicle;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,6 +28,8 @@ public class ParkingManager {
     this.vehicleDao = vehicleDao;
     this.slotDao = slotDao;
     nextFreeSlot = new AtomicReference<>();
+    totalSlots = new AtomicInteger(0);
+    usedSlots = new AtomicInteger(0);
     freeSlotPicker =
         new Thread(
             () -> {
@@ -40,7 +42,11 @@ public class ParkingManager {
   }
 
   public void create_parking_lot(int numberOfSlots) {
+    if (totalSlots.get() > 0) {
+      throw new ParkingException(ErrorCode.PARKING_LOT_EXISTS);
+    }
     ((InMemorySlotDao) slotDao).add(numberOfSlots);
+    totalSlots.addAndGet(numberOfSlots);
     freeSlotPicker.run();
   }
 
@@ -58,6 +64,7 @@ public class ParkingManager {
     vehicle.setSlotId(slot.getId());
     vehicleDao.save(vehicle);
 
+    usedSlots.incrementAndGet();
     freeSlotPicker.run();
     return vehicle;
   }
@@ -72,6 +79,7 @@ public class ParkingManager {
     // Remove vehicle from vehicles table
     vehicleDao.delete(vehicleRegNo);
 
+    usedSlots.decrementAndGet();
     if (isParkingFull()) freeSlotPicker.run();
 
     return slot;
@@ -79,6 +87,9 @@ public class ParkingManager {
 
   public Slot release(int slot_id) {
     Slot slot = slotDao.get(slot_id);
+    if (slot == null) {
+      throw new ParkingException(ErrorCode.INVALID_SLOT);
+    }
 
     // Remove vehicle from vehicles table
     vehicleDao.delete(slot.getVehicle().getRegNo());

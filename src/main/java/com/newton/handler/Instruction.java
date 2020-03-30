@@ -1,4 +1,4 @@
-package com.newton.instruction;
+package com.newton.handler;
 
 public enum Instruction {
   CREATE_PARKING_LOT,
@@ -8,5 +8,6 @@ public enum Instruction {
   REGISTRATION_NUMBERS_FOR_CARS_WITH_COLOUR,
   SLOT_NUMBERS_FOR_CARS_WITH_COLOUR,
   SLOT_NUMBER_FOR_REGISTRATION_NUMBER,
-  INVALID_INSTRUCTION;
+  HELP,
+  EXIT;
 }

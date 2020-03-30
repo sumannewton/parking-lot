@@ -4,7 +4,7 @@ import com.newton.dao.InMemoryDB;
 import com.newton.dao.InMemorySlotDao;
 import com.newton.dao.InMemoryVehicleDao;
 import com.newton.exception.ParkingException;
-import com.newton.instruction.ParkingInstruction;
+import com.newton.handler.ParkingInstructionHandler;
 import com.newton.service.ParkingManager;
 import com.newton.utils.Utils;
 import java.io.BufferedReader;
@@ -23,43 +23,44 @@ public class Application {
     InMemoryDB db = new InMemoryDB();
     ParkingManager parkingManager =
         new ParkingManager(new InMemoryVehicleDao(db), new InMemorySlotDao(db));
-    ParkingInstruction parkingInstruction = new ParkingInstruction(parkingManager);
+    ParkingInstructionHandler parkingInstructionHandler = new ParkingInstructionHandler(parkingManager);
 
     if (args.length == 0) {
-      startInteractiveCommandPrompt(parkingInstruction);
+      startInteractiveCommandPrompt(parkingInstructionHandler);
     } else {
-      startReadingCommandsFromFile(parkingInstruction, args[0]);
+      startReadingCommandsFromFile(parkingInstructionHandler, args[0]);
     }
   }
 
   private static void startReadingCommandsFromFile(
-      ParkingInstruction parkingInstruction, String file) {
+      ParkingInstructionHandler parkingInstructionHandler, String file) {
     try {
       FileReader fileReader = new FileReader(new File(file));
       BufferedReader bufferedReader = new BufferedReader(fileReader);
-      readAndExecute(parkingInstruction, bufferedReader);
+      readAndExecute(parkingInstructionHandler, bufferedReader);
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  private static void startInteractiveCommandPrompt(ParkingInstruction parkingInstruction) {
+  private static void startInteractiveCommandPrompt(
+      ParkingInstructionHandler parkingInstructionHandler) {
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    readAndExecute(parkingInstruction, reader);
+    readAndExecute(parkingInstructionHandler, reader);
   }
 
-  private static void readAndExecute(ParkingInstruction parkingInstruction, BufferedReader reader) {
+  private static void readAndExecute(ParkingInstructionHandler parkingInstructionHandler, BufferedReader reader) {
+    String line;
     while (true) {
-      String line;
+      System.out.print("cmdline> ");
       try {
         line = reader.readLine();
-        if (line == null || line.equalsIgnoreCase("exit")) {
-          System.out.println("Shutting down app....ex");
-          System.exit(0);
+        String[] inputs = new String[]{"exit"};
+        if (line != null) {
+           inputs = line.split(" ");
         }
-        String[] inputs = line.split(" ");
         try {
-          parkingInstruction.execute(inputs);
+          parkingInstructionHandler.execute(inputs);
         } catch (ParkingException e) {
           System.out.println(e.getMessage());
         }

@@ -29,6 +29,8 @@ public class InMemorySlotDao implements Dao<Slot> {
   }
 
   public Slot get(Object slot_id) {
+    if ((int)slot_id > database.SLOTS_TABLE.size())
+      return null;
     return database.SLOTS_TABLE.get((int) slot_id - 1);
   }
 

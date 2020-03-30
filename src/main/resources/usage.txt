@@ -1,6 +1,8 @@
 |-------------------------------------------------------------|
 |                     PARKING LOT MANUAL                      |
 |-------------------------------------------------------------|
+| help                                                        |
+| exit                                                        |
 | create_parking_lot {SLOT_SIZE}                              |
 | park {VEHICLE_REG_NO} {VEHICLE_COLOUR}                      |
 | leave {VEHICLE_REG_NO}                                      |
